@@ -13,14 +13,15 @@ import discord
 import traceback
 
 
-internal_config = DynamicConfigDict("internal_config.json", default_config={
+internal_config = DynamicConfigDict(file="internal_config.json", default_config={
     "discord": {
         "email": "change_me",
         "password": "change_me"
     },
     "updater": {
         "fallbacks": True,
-        "repo": "httpszetahunter/imp"
+        "repo": "https://github.com/zetahunter/imp.git",
+        "update_interval": 60
     }
 })
 

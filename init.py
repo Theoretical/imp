@@ -5,6 +5,8 @@ __author__ = 'Alex'
 import commands
 import imp
 import multiprocessing as mp
+import threading
+import updater
 from importlib import reload
 
 def restart(delay=0):
@@ -42,4 +44,6 @@ def start():
     client.run()
 
 if __name__ == "__main__":
+    updater_thread = updater.GitUpdater()
+    updater_thread.start()
     restart()
