@@ -5,7 +5,9 @@ import random
 import pprint
 import multiprocessing as mp
 import datetime
+import discord
 import pytz
+import imp
 
 import tools
 import tools.calculator
@@ -44,15 +46,15 @@ class Info(Imp.Command):
             "We are on '{server_name}' server created by '{server_owner}' located in '{server_region}' region.\n"
             "Talking in #{channel_name}, there are {user_online_count} users online and {user_idle_count} users idle out of total {user_count}.".format(
                 name=self.imp.config['name'],
-                version=self.imp.config['version'],
+                version="<{} / {}>".format(self.imp.config['version'], imp.internal_version),
                 author=self.imp.config['author'],
-                server_name=self.message.channel.server.name,
-                server_owner=self.message.channel.server.owner.name,
-                server_region=self.message.channel.server.region,
+                server_name=self.message.channel.server.name if isinstance(self.message.channel, discord.Channel) else "Private Channel",
+                server_owner=self.message.channel.server.owner.name if isinstance(self.message.channel, discord.Channel) else "Nobody",
+                server_region=self.message.channel.server.region if isinstance(self.message.channel, discord.Channel) else "Nowhere",
                 channel_name=self.message.channel.name,
-                user_count=len(self.message.channel.server.members),
-                user_online_count=sum('online' in user.status for user in self.message.channel.server.members),
-                user_idle_count=sum('idle' in user.status for user in self.message.channel.server.members)
+                user_count=len(self.message.channel.server.members) if isinstance(self.message.channel, discord.Channel) else 0,
+                user_online_count=sum('online' in user.status for user in self.message.channel.server.members) if isinstance(self.message.channel, discord.Channel) else 0,
+                user_idle_count=sum('idle' in user.status for user in self.message.channel.server.members) if isinstance(self.message.channel, discord.Channel) else 0
             ))
 
 
@@ -82,6 +84,9 @@ class Get(Imp.Command):
 
 
 class Echo(Imp.Command):
+    def can_run(self):
+        return self.imp.is_privileged(self.message.author.id)
+
     def run(self):
         """
         Sends argument as message to channel.
@@ -128,7 +133,7 @@ class Kill(Imp.Command):
             self.message.channel,
             "{who} killed {victim} in the {room} using {weapon}!".format(
                 who=self.message.author.mention(),
-                victim=self.message.mentions[0].mention() if self.args is None else self.args,
+                victim= self.message.mentions[0].mention() if len(self.message.mentions) > 0 else "himself" if self.args is None else self.args,
                 room=random.choice(rooms),
                 weapon=random.choice(wep)), mentions=True)
 

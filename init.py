@@ -1,13 +1,12 @@
 #!/usr/bin/env python
-import time
 
 __author__ = 'Alex'
+from importlib import reload
+
 import commands
 import imp
-import multiprocessing as mp
-import threading
-import updater
-from importlib import reload
+from updater import *
+
 
 def restart(delay=0):
     reload(imp)
@@ -18,6 +17,7 @@ def restart(delay=0):
     master_child.join()
 
 def start():
+
     client = imp.Imp()
     client.login(imp.internal_config['discord']['email'], imp.internal_config['discord']['password'])
     client.register_command(commands.Countdown(), 'countdown')
@@ -41,9 +41,11 @@ def start():
     client.register_command(commands.Get(), "get")
     client.register_command(commands.Echo(), "echo")
     client.register_command(commands.Awesome(), "awesome")
+
+    updater = GitUpdater()
+    updater.start()
     client.run()
 
+
 if __name__ == "__main__":
-    updater_thread = updater.GitUpdater()
-    updater_thread.start()
     restart()

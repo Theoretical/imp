@@ -1,18 +1,20 @@
 import codecs
+import logging
 import os
 import sys
-import time
-import emoji
 import threading
+
 from config import DynamicConfigDict, DynamicConfigList
-import tools, tools.jobs
+import tools
+import tools.jobs
+from updater import GitUpdater
 
 __author__ = 'Zeta'
 
 import discord
 import traceback
 
-
+internal_version = "Gitless Build"
 internal_config = DynamicConfigDict(file="internal_config.json", default_config={
     "discord": {
         "email": "change_me",
@@ -20,7 +22,7 @@ internal_config = DynamicConfigDict(file="internal_config.json", default_config=
     },
     "updater": {
         "fallbacks": True,
-        "repo": "https://github.com/zetahunter/imp.git",
+        "repo": "origin/master",
         "update_interval": 60
     }
 })
@@ -67,6 +69,7 @@ class Imp(discord.Client):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
         self.scheduler = tools.jobs.JobScheduler(self)
         self.scheduler.start()
         self.commands = {}
@@ -79,7 +82,7 @@ class Imp(discord.Client):
             'context_trigger': "!",
             'remove_trigger': '#',
             'author': "Zeta",
-            'version': "Impoid v0.2.0",
+            'version': "Impoid v0.4.0",
             'privileged': [
                 94129005791281152 #Zeta
             ]
@@ -88,7 +91,6 @@ class Imp(discord.Client):
         self.ignored.load()
         self.config = DynamicConfigDict(file="config.json", default_config=self.default_config)
         self.config.load()
-
         self.config.bind_to(self.internal_on_config_change)
 
         for event in self.events:
@@ -221,7 +223,7 @@ class Imp(discord.Client):
 
     def internal_on_message(self, message):
         msg = str(message.content)
-        print("{server} | #{channel} - {user}: {message}".format(
+        logging.info( "{server} | #{channel} - {user}: {message}".format(
             server=message.channel.server.name if isinstance(message.channel, discord.Channel) else 'Private Channel',
             channel=message.channel.name if isinstance(message.channel, discord.Channel) else message.channel.user.name,
             user=message.author,
