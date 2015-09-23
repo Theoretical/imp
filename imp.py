@@ -224,7 +224,7 @@ class Imp(discord.Client):
 
     def internal_on_message(self, message):
         msg = str(message.content)
-        logging.info( "{server} | #{channel} - {user}: {message}".format(
+        print( "{server} | #{channel} - {user}: {message}".format(
             server=message.channel.server.name if isinstance(message.channel, discord.Channel) else 'Private Channel',
             channel=message.channel.name if isinstance(message.channel, discord.Channel) else message.channel.user.name,
             user=message.author,

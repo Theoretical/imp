@@ -6,7 +6,6 @@ import pprint
 import multiprocessing as mp
 import datetime
 import discord
-import pytz
 import imp
 
 import tools
@@ -429,20 +428,21 @@ class Countdown(Imp.Command):
         """
         Sends a response with countdown to <year> <month> <day>
         """
-        if self.args is None:
-            return self.reply("Please use proper format: 2012 12 21")
-        text = self.args.split()
-        if text and (text[0].isdigit() and text[1].isdigit() and text[2].isdigit() and len(text) == 3):
-            then = datetime.datetime(int(text[0]), int(text[1]), int(text[2]))
-            diff = (then.astimezone(pytz.utc) -  datetime.datetime.now(tz=datetime.utc))
-            return self.reply("{days} days, {hours} hours and {minutes} minutes until {text[0]} {text[1]} {text[2]}.".format(
-                days=int(diff.days),
-                hours=int(diff.seconds / 60 / 60),
-                minutes=int(diff.seconds / 60 - int(diff.seconds / 60 / 60) * 60),
-                text=text
-            ))
-        else:
-            return self.reply("Please use proper format: 2012 12 21")
+        return self.reply("Not now.")
+        # if self.args is None:
+        #     return self.reply("Please use proper format: 2012 12 21")
+        # text = self.args.split()
+        # if text and (text[0].isdigit() and text[1].isdigit() and text[2].isdigit() and len(text) == 3):
+        #     then = datetime.datetime(int(text[0]), int(text[1]), int(text[2]))
+        #     diff = (then - datetime.datetime.now(tz=datetime.utc))
+        #     return self.reply("{days} days, {hours} hours and {minutes} minutes until {text[0]} {text[1]} {text[2]}.".format(
+        #         days=int(diff.days),
+        #         hours=int(diff.seconds / 60 / 60),
+        #         minutes=int(diff.seconds / 60 - int(diff.seconds / 60 / 60) * 60),
+        #         text=text
+        #     ))
+        # else:
+        #     return self.reply("Please use proper format: 2012 12 21")
 
 class Invite(Imp.Command):
     def can_run(self):
