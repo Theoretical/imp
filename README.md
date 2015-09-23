@@ -6,3 +6,5 @@ This bot has an automatic updating integrated permitting it continius execution 
 
 # deploy
 It's very easy to deploy the imp bot to your discord server.
+
+# don't mind this edits, they are for updater testing.
