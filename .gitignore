@@ -59,3 +59,4 @@ target/
 ignored.json
 config.json
 internal_config.json
+.idea
