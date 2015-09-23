@@ -70,6 +70,7 @@ class Imp(discord.Client):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        logging.basicConfig(filename="messages.log", filemode='w', level=logging.INFO)
         self.scheduler = tools.jobs.JobScheduler(self)
         self.scheduler.start()
         self.commands = {}

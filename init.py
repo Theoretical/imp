@@ -1,14 +1,14 @@
 #!/usr/bin/env python
-
-__author__ = 'Alex'
 from importlib import reload
 
 import commands
 import imp
-from updater import *
-
+import updater
+import multiprocessing as mp
+import time
 
 def restart(delay=0):
+    reload(updater)
     reload(imp)
     reload(commands)
     master_child = mp.Process(target=start)
@@ -42,8 +42,8 @@ def start():
     client.register_command(commands.Echo(), "echo")
     client.register_command(commands.Awesome(), "awesome")
 
-    updater = GitUpdater()
-    updater.start()
+    updater_thread = updater.GitUpdater()
+    updater_thread.start()
     client.run()
 
 
