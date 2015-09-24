@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from importlib import reload
 
 import commands
@@ -7,7 +7,13 @@ import updater
 import multiprocessing as mp
 import time
 
+client = None
+master_child = None
+
 def restart(delay=0):
+    global master_child
+    if master_child is not None:
+        master_child.terminate()
     reload(updater)
     reload(imp)
     reload(commands)
@@ -17,6 +23,10 @@ def restart(delay=0):
     master_child.join()
 
 def start():
+    global client
+    if client is not None:
+        client.logout()
+        del client
 
     client = imp.Imp()
     client.login(imp.internal_config['discord']['email'], imp.internal_config['discord']['password'])

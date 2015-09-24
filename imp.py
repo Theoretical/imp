@@ -4,6 +4,7 @@ import os
 import sys
 import threading
 
+from init import restart
 from config import DynamicConfigDict, DynamicConfigList
 import tools
 import tools.jobs
@@ -101,6 +102,7 @@ class Imp(discord.Client):
         self._events['on_message'].append(self.internal_on_message)
         self._events['on_ready'].append(self.internal_on_ready)
         self._events['on_error'].append(self.internal_on_error)
+        self._events['on_disconnect'].append(self.internal_on_disconnect)
 
     def is_privileged(self, id):
         return int(id) in self.config['privileged']
@@ -216,8 +218,10 @@ class Imp(discord.Client):
 
     def internal_on_ready(self):
         print('Imp is Connected!')
-        print('Username: ' + self.user.id)
         print('ID: ' + self.user.id)
+
+    def internal_on_disconnect(self):
+        restart(1)	
 
     def internal_on_error(self, event,typ, value, tb):
         self.error()

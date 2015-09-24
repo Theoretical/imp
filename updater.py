@@ -5,7 +5,7 @@ import multiprocessing as mp
 
 from git import Repo, RemoteProgress
 import imp
-from init import restart
+import init
 
 
 class MyProgressPrinter(RemoteProgress):
@@ -42,12 +42,7 @@ class GitUpdater(threading.Thread):
                 print(data)
                 print("We have updated to #{}".format(self.local_repo.commit().hexsha[:7]))
                 print("Will undergo a cold reload now.")
-                restart(1)
-                p = mp.current_process()
-                try:
-                    p.terminate()
-                except:
-                    pass
+                init.restart(1)
                 no_updates = False
             time.sleep(self.update_interval)
 
